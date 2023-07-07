@@ -14,11 +14,6 @@ import "./App.css";
 import incidentsJSON from "./data/incidents.json";
 const incidents = incidentsJSON.incidents;
 
-const containerStyle = {
-    width: "400px",
-    height: "400px",
-};
-
 /**
  * The main app component.
  *
@@ -34,6 +29,7 @@ function App() {
     const [map, setMap] = useState(null);
     const [visibleIncidents, setVisibleIncidents] = useState([]);
     const [selectedIncident, setSelectedIncident] = useState(null);
+    const [isIncidentListVisible, setIsIncidentListVisible] = useState(false);
 
     /**
      * When the map has loaded, set the bounds to fit all incidents.
@@ -107,7 +103,24 @@ function App() {
 
     return isLoaded ? (
         <div className="app">
-            <div className="incidentList">
+            <div className="incidentListHeader">
+                <span>
+                    {visibleIncidents.length} incident
+                    {visibleIncidents.length === 1 ? "" : "s"} shown.
+                </span>
+                <button
+                    onClick={() =>
+                        setIsIncidentListVisible(!isIncidentListVisible)
+                    }
+                >
+                    {isIncidentListVisible ? "Hide" : "Show"} Incidents
+                </button>
+            </div>
+            <div
+                className={`incidentList ${
+                    isIncidentListVisible ? "visible" : ""
+                }`}
+            >
                 <h2>Incidents</h2>
                 <ul>
                     {visibleIncidents.map((incident) => (
@@ -119,7 +132,7 @@ function App() {
                 </ul>
             </div>
             <GoogleMap
-                mapContainerStyle={containerStyle}
+                mapContainerClassName="mapContainer"
                 zoom={10}
                 onLoad={handleMapLoad}
                 onUnmount={handleMapUnmount}
