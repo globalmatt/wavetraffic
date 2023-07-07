@@ -1,4 +1,4 @@
-.incidentList h1 {
+.incidentList h2 {
     font-size: 1em;
 }
 
@@ -12,4 +12,9 @@
 .incidentList ul li h2,
 .incidentList ul li p {
     margin: 0;
+}
+
+/* Remove the blue border around InfoWindow close buttons. */
+button.gm-ui-hover-effect:focus {
+    outline: none;
 }
