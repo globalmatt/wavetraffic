@@ -10,6 +10,13 @@ import {
 
 import "./App.css";
 
+// Load the incident icon SVGs.
+import TowTruck from "./assets/tow-truck.svg";
+import RoadCone from "./assets/road-cone.svg";
+import Balloon from "./assets/balloon.svg";
+import Flash from "./assets/flash.svg";
+import Exclamation from "./assets/exclamation.svg";
+
 // Load the JSON incident data.
 import incidentsJSON from "./data/incidents.json";
 const incidents = incidentsJSON.incidents;
@@ -114,13 +121,35 @@ function App() {
      * - Capitalise the first letter.
      *
      * @param {String} alert The raw alert type.
-     * @returns The formatted alert type.
+     * @returns {String} The formatted alert type.
      */
     const formatAlertType = (alert) => {
         if (alert === "tow_allocation") {
             return "Tow Allocation";
         } else {
             return alert.charAt(0).toUpperCase() + alert.slice(1);
+        }
+    };
+
+    /**
+     * Given an incident, return an icon that is appropriate for the
+     * incident's type.
+     *
+     * @param {Object} incident The incident.
+     * @returns {String} The icon.
+     */
+    const getIcon = (incident) => {
+        switch (incident.alert_type) {
+            case "tow_allocation":
+                return TowTruck;
+            case "roadworks":
+                return RoadCone;
+            case "event":
+                return Balloon;
+            case "emergency":
+                return Flash;
+            case "alert":
+                return Exclamation;
         }
     };
 
@@ -166,6 +195,7 @@ function App() {
                 <>
                     {incidents.map((incident) => (
                         <Marker
+                            icon={getIcon(incident)}
                             key={incident.id}
                             position={{
                                 lat: parseFloat(incident.lat),

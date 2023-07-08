@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="30px" height="30px" viewBox="0 0 100 100" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+    xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Road-Cone" serif:id="Road Cone">
+        <g transform="matrix(0.979164,0,0,0.979164,0.0688943,0.0588853)">
+            <circle cx="51.3" cy="50.82" r="49.021" style="fill:rgb(238,238,238);stroke:black;stroke-width:2.04px;"/>
+        </g>
+        <g id="Road-Cone1" serif:id="Road Cone" transform="matrix(2.74408,0,0,2.74408,17.1709,12.8267)">
+            <path d="M11.194,2C10.619,2 10.115,2.396 9.979,2.955C9.288,5.797 8.444,8.905 7.594,12L12.75,12C13.161,12 13.5,12.339 13.5,12.75C13.5,13.161 13.161,13.5 12.75,13.5L7.181,13.5L6.631,15.5L13.75,15.5C14.161,15.5 14.5,15.839 14.5,16.25C14.5,16.661 14.161,17 13.75,17L6.222,17C5.897,18.198 5.583,19.37 5.29,20.5L2.75,20.5C2.339,20.5 2,20.839 2,21.25C2,21.661 2.339,22 2.75,22L21.25,22C21.661,22 22,21.661 22,21.25C22,20.839 21.661,20.5 21.25,20.5L18.71,20.5L14.023,2.928C13.878,2.383 13.38,2 12.816,2L11.194,2Z" style="fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

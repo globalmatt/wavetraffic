@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="30px" height="30px" viewBox="0 0 100 100" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+    xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Exclamation">
+        <g transform="matrix(0.979164,0,0,0.979164,0.0688943,0.0588853)">
+            <circle cx="51.3" cy="50.82" r="49.021" style="fill:rgb(255,219,112);stroke:black;stroke-width:2.04px;"/>
+        </g>
+        <g id="Exclamation1" serif:id="Exclamation" transform="matrix(6.88292,0,0,6.88292,-87.5582,-32.889)">
+            <path d="M21,13L19,13L19,7L21,7L21,13M21,16.583L19,16.583L19,14.583L21,14.583L21,16.583Z" style="fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

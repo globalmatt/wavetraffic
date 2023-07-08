@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="30px" height="30px" viewBox="0 0 100 100" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+    xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Flasn">
+        <g transform="matrix(0.979164,0,0,0.979164,0.0688943,0.0588853)">
+            <circle cx="51.3" cy="50.82" r="49.021" style="fill:rgb(230,0,0);stroke:black;stroke-width:2.04px;"/>
+        </g>
+        <g id="Flash" transform="matrix(2.88012,0,0,2.88012,17.3238,17.4175)">
+            <path d="M7,2L7,13L10,13L10,22L17,10L13,10L17,2L7,2Z" style="fill:white;fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>
