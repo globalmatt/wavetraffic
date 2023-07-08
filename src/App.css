@@ -9,6 +9,7 @@ body {
 html {
     overflow: hidden;
 }
+
 body {
     overflow-y: hidden;
 }
@@ -40,18 +41,31 @@ body {
 
 .incidentList h2 {
     font-size: 1em;
+    padding: 10px;
 }
 
 .incidentList ul {
     list-style: none;
     margin: 0;
-    padding: 0 0 0 10px;
+    padding: 0;
     font-size: 0.8em;
+    border-top: 1px solid #888;
+}
+
+.incidentList ul li {
+    padding: 10px;
+    border-bottom: 1px solid #888;
+}
+
+.incidentList ul li:hover {
+    padding: 10px;
+    background: #666;
 }
 
 .incidentList ul li h2,
 .incidentList ul li p {
     margin: 0;
+    padding: 0;
 }
 
 .incidentListHeader {
