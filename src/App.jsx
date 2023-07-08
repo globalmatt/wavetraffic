@@ -103,33 +103,35 @@ function App() {
 
     return isLoaded ? (
         <div className="app">
-            <div className="incidentListHeader">
-                <span>
-                    {visibleIncidents.length} incident
-                    {visibleIncidents.length === 1 ? "" : "s"} shown.
-                </span>
-                <button
-                    onClick={() =>
-                        setIsIncidentListVisible(!isIncidentListVisible)
-                    }
+            <div className="incidentListWrap">
+                <div className="incidentListHeader">
+                    <span>
+                        {visibleIncidents.length} incident
+                        {visibleIncidents.length === 1 ? "" : "s"} shown.
+                    </span>
+                    <button
+                        onClick={() =>
+                            setIsIncidentListVisible(!isIncidentListVisible)
+                        }
+                    >
+                        {isIncidentListVisible ? "Hide" : "Show"} Incidents
+                    </button>
+                </div>
+                <div
+                    className={`incidentList ${
+                        isIncidentListVisible ? "visible" : ""
+                    }`}
                 >
-                    {isIncidentListVisible ? "Hide" : "Show"} Incidents
-                </button>
-            </div>
-            <div
-                className={`incidentList ${
-                    isIncidentListVisible ? "visible" : ""
-                }`}
-            >
-                <h2>Incidents</h2>
-                <ul>
-                    {visibleIncidents.map((incident) => (
-                        <li key={incident.id}>
-                            <h2>{incident.alert_type}</h2>
-                            <p>{incident.title}</p>
-                        </li>
-                    ))}
-                </ul>
+                    <h2>Incidents</h2>
+                    <ul>
+                        {visibleIncidents.map((incident) => (
+                            <li key={incident.id}>
+                                <h2>{incident.alert_type}</h2>
+                                <p>{incident.title}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
             <GoogleMap
                 mapContainerClassName="mapContainer"

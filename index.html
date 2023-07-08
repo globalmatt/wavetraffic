@@ -10,6 +10,11 @@
         <title>Wave Traffic</title>
 
         <script>
+            /**
+             * Calculate the inner viewport height and store it in a CSS
+             * variable. This lets us access the true viewport height in
+             * iPhone Safari.
+             */
             const setInnerVh = () => {
                 const innerVh = window.innerHeight;
                 document.documentElement.style.setProperty(
