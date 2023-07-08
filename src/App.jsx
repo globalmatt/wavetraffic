@@ -92,13 +92,36 @@ function App() {
         incident.marker = marker;
     };
 
-    const handleMarkerClick = (e, incident) => {
+    /**
+     * When a marker is clicked, display an info window with the
+     * incident details.
+     *
+     * @param {Object} incident The incident that the marker relates to.
+     */
+    const handleMarkerClick = (incident) => {
         // Force a re-render for this first state update
         // to ensure any existing <InfoWindow> is unmounted.
         flushSync(() => setSelectedIncident(null));
 
         // Now display the new <InfoWindow>.
         setSelectedIncident(incident);
+    };
+
+    /**
+     * Format an alert type for better UX:
+     *
+     * - Replace "tow_allocation" with "Tow Allocation".
+     * - Capitalise the first letter.
+     *
+     * @param {String} alert The raw alert type.
+     * @returns The formatted alert type.
+     */
+    const formatAlertType = (alert) => {
+        if (alert === "tow_allocation") {
+            return "Tow Allocation";
+        } else {
+            return alert.charAt(0).toUpperCase() + alert.slice(1);
+        }
     };
 
     return isLoaded ? (
@@ -126,7 +149,7 @@ function App() {
                     <ul>
                         {visibleIncidents.map((incident) => (
                             <li key={incident.id}>
-                                <h2>{incident.alert_type}</h2>
+                                <h2>{formatAlertType(incident.alert_type)}</h2>
                                 <p>{incident.title}</p>
                             </li>
                         ))}
@@ -151,7 +174,7 @@ function App() {
                             onLoad={(marker) =>
                                 saveIncidentMarker(marker, incident)
                             }
-                            onClick={(e) => handleMarkerClick(e, incident)}
+                            onClick={() => handleMarkerClick(incident)}
                         ></Marker>
                     ))}
                     {selectedIncident && (
@@ -160,7 +183,11 @@ function App() {
                             onCloseClick={handleInfoWindowCloseClick}
                         >
                             <>
-                                <h2>{selectedIncident.alert_type}</h2>
+                                <h2>
+                                    {formatAlertType(
+                                        selectedIncident.alert_type
+                                    )}
+                                </h2>
                                 <h3>{selectedIncident.title}</h3>
                                 <p>{selectedIncident.description}</p>
                             </>
