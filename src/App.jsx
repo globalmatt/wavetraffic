@@ -178,8 +178,16 @@ function App() {
                     <ul>
                         {visibleIncidents.map((incident) => (
                             <li key={incident.id}>
-                                <h2>{formatAlertType(incident.alert_type)}</h2>
-                                <p>{incident.title}</p>
+                                <img
+                                    src={getIcon(incident)}
+                                    alt={formatAlertType(incident.alert_type)}
+                                ></img>
+                                <div>
+                                    <h2>
+                                        {formatAlertType(incident.alert_type)}
+                                    </h2>
+                                    <p>{incident.title}</p>
+                                </div>
                             </li>
                         ))}
                     </ul>
