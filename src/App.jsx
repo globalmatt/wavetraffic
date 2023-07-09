@@ -37,6 +37,7 @@ function App() {
     const [selectedIncident, setSelectedIncident] = useState(null);
     const [isIncidentListVisible, setIsIncidentListVisible] = useState(false);
     const incidentListItemRefs = useRef([]);
+    const incidentListRef = useRef();
 
     /**
      * When the map has loaded:
@@ -131,11 +132,15 @@ function App() {
             selectedIncident &&
             incidentListItemRefs.current[parseInt(selectedIncident.id)]
         ) {
-            incidentListItemRefs.current[
-                parseInt(selectedIncident.id)
-            ].scrollIntoView({});
+            setTimeout(() => {
+                incidentListRef.current.scrollTo({
+                    top: incidentListItemRefs.current[
+                        parseInt(selectedIncident.id)
+                    ].offsetTop,
+                });
+            }, 1000);
         }
-    }, [selectedIncident, visibleIncidents]);
+    }, [selectedIncident, visibleIncidents, isIncidentListVisible]);
 
     /**
      * When a marker is clicked, display an info window with the
@@ -225,7 +230,7 @@ function App() {
                         {visibleIncidents.length} incident
                         {visibleIncidents.length === 1 ? "" : "s"} shown.
                     </h2>
-                    <ul>
+                    <ul ref={incidentListRef}>
                         {visibleIncidents.map((incident) => (
                             <li
                                 key={incident.id}
