@@ -70,7 +70,7 @@ function App() {
 
         // Create the markers.
 
-        incidents.map((incident) => {
+        incidents.forEach((incident) => {
             const marker = new GoogleMaps.Marker({
                 map: map,
                 position: new GoogleMaps.LatLng(
