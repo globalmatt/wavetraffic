@@ -44,8 +44,6 @@ A live demo of the app is available at [https://www.elated.com/wavetraffic/](htt
 
 Some suggested enhancements for the app if more time becomes available:
 
--   Implement "add to home screen" support for the app.
-
 -   Link the incident list items to the markers, so opening a marker's info window also highlights the corresponding list item, and vice versa.
 
 -   Add light/dark-mode support to the incident list and list header.
