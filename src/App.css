@@ -112,8 +112,11 @@ body {
 }
 
 .incidentList ul li:hover {
-    padding: 10px;
-    background: #666;
+    background: #444;
+}
+
+.incidentList ul li.selected {
+    background: #777;
 }
 
 .incidentList ul li h2 {

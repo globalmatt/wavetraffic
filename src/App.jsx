@@ -1,7 +1,7 @@
 // Vendors.
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { flushSync } from "react-dom";
-import { GoogleMap, useJsApiLoader, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader, InfoWindowF } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 // App styles.
@@ -36,6 +36,7 @@ function App() {
     const [visibleIncidents, setVisibleIncidents] = useState([]);
     const [selectedIncident, setSelectedIncident] = useState(null);
     const [isIncidentListVisible, setIsIncidentListVisible] = useState(false);
+    const incidentListItemRefs = useRef([]);
 
     /**
      * When the map has loaded:
@@ -122,6 +123,21 @@ function App() {
     };
 
     /**
+     * Whenever the selected incident or incident list changes,
+     * scroll to the selected incident in the list.
+     */
+    useEffect(() => {
+        if (
+            selectedIncident &&
+            incidentListItemRefs.current[parseInt(selectedIncident.id)]
+        ) {
+            incidentListItemRefs.current[
+                parseInt(selectedIncident.id)
+            ].scrollIntoView({});
+        }
+    }, [selectedIncident, visibleIncidents]);
+
+    /**
      * When a marker is clicked, display an info window with the
      * incident details.
      *
@@ -131,7 +147,6 @@ function App() {
         // Force a re-render for this first state update
         // to ensure any existing <InfoWindow> is unmounted.
         flushSync(() => setSelectedIncident(null));
-
         // Now display the new <InfoWindow>.
         setSelectedIncident(incident);
     };
@@ -212,7 +227,20 @@ function App() {
                     </h2>
                     <ul>
                         {visibleIncidents.map((incident) => (
-                            <li key={incident.id}>
+                            <li
+                                key={incident.id}
+                                ref={(el) =>
+                                    (incidentListItemRefs.current[
+                                        parseInt(incident.id)
+                                    ] = el)
+                                }
+                                className={
+                                    selectedIncident &&
+                                    selectedIncident.id === incident.id
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
                                 <img
                                     src={getIcon(incident)}
                                     alt={formatAlertType(incident.alert_type)}
@@ -237,7 +265,7 @@ function App() {
             >
                 <>
                     {selectedIncident && (
-                        <InfoWindow
+                        <InfoWindowF
                             anchor={selectedIncident.marker}
                             onCloseClick={handleInfoWindowCloseClick}
                         >
@@ -250,7 +278,7 @@ function App() {
                                 <h3>{selectedIncident.title}</h3>
                                 <p>{selectedIncident.description}</p>
                             </>
-                        </InfoWindow>
+                        </InfoWindowF>
                     )}
                 </>
             </GoogleMap>
