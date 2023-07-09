@@ -51,18 +51,22 @@ function App() {
         // Store the map.
         setMap(map);
 
-        // Extend the bounds.
+        // Extend the bounds. (Wait 500ms to give iOS Safari enough time
+        // to initialise the map on page reload, otherwise it displays
+        // the whole world. TODO: Find a more robust solution for this.)
 
-        const bounds = new GoogleMaps.LatLngBounds();
+        setTimeout(() => {
+            const bounds = new GoogleMaps.LatLngBounds();
 
-        incidents.forEach((incident) => {
-            bounds.extend({
-                lat: parseFloat(incident.lat),
-                lng: parseFloat(incident.long),
+            incidents.forEach((incident) => {
+                bounds.extend({
+                    lat: parseFloat(incident.lat),
+                    lng: parseFloat(incident.long),
+                });
             });
-        });
 
-        map.fitBounds(bounds);
+            map.fitBounds(bounds);
+        }, 500);
 
         // Create the markers.
 
@@ -105,6 +109,7 @@ function App() {
     const updateList = () => {
         if (!map) return;
         const bounds = map.getBounds();
+        if (!bounds) return;
 
         setVisibleIncidents(
             incidents.filter((incident) =>
@@ -190,8 +195,10 @@ function App() {
                             setIsIncidentListVisible(!isIncidentListVisible)
                         }
                     >
-                        {isIncidentListVisible ? "Hide" : "View"} Incident
-                        {visibleIncidents.length === 1 ? "" : "s"}
+                        {isIncidentListVisible
+                            ? "Close"
+                            : "View Incident" +
+                              (visibleIncidents.length === 1 ? "" : "s")}
                     </button>
                 </div>
                 <div
@@ -199,7 +206,10 @@ function App() {
                         isIncidentListVisible ? "visible" : ""
                     }`}
                 >
-                    <h2>Incidents</h2>
+                    <h2>
+                        {visibleIncidents.length} incident
+                        {visibleIncidents.length === 1 ? "" : "s"} shown.
+                    </h2>
                     <ul>
                         {visibleIncidents.map((incident) => (
                             <li key={incident.id}>

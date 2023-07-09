@@ -55,6 +55,7 @@ body {
         position: static;
         width: 350px;
         height: 100vh;
+        overflow-y: hidden;
         opacity: 1;
         visibility: visible;
     }
@@ -67,9 +68,17 @@ body {
     transition: opacity 0.3s, visibility 0.3s;
 }
 
-.incidentList h2 {
+.incidentList > h2 {
     font-size: 1em;
     padding: 10px;
+    display: none;
+}
+
+/* Display the incident list heading on desktop only. */
+@media (min-width: 800px) {
+    .incidentList > h2 {
+        display: block;
+    }
 }
 
 .incidentList ul {
@@ -78,6 +87,17 @@ body {
     padding: 0;
     font-size: 0.8em;
     border-top: 1px solid #888;
+}
+
+/* On desktop, absolutely position the list below the heading and make it scrollable. */
+@media (min-width: 800px) {
+    .incidentList ul {
+        position: absolute;
+        top: 70px;
+        width: 350px;
+        height: calc(var(--innerVh) - 70px);
+        overflow-y: scroll;
+    }
 }
 
 .incidentList ul li {
@@ -90,6 +110,11 @@ body {
 .incidentList ul li:hover {
     padding: 10px;
     background: #666;
+}
+
+.incidentList ul li h2 {
+    font-size: 1em;
+    padding: 10px;
 }
 
 .incidentList ul li h2,
@@ -113,6 +138,7 @@ body {
     padding: 10px;
     background: #333;
     color: #fff;
+    font-weight: bold;
 }
 
 /* On desktop, hide the header. */
