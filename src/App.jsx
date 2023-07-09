@@ -1,13 +1,10 @@
+// Vendors.
 import { useState, useCallback } from "react";
 import { flushSync } from "react-dom";
+import { GoogleMap, useJsApiLoader, InfoWindow } from "@react-google-maps/api";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
-import {
-    GoogleMap,
-    useJsApiLoader,
-    Marker,
-    InfoWindow,
-} from "@react-google-maps/api";
-
+// App styles.
 import "./App.css";
 
 // Load the incident icon SVGs.
@@ -28,21 +25,35 @@ const incidents = incidentsJSON.incidents;
  * @returns ReactElement The app content.
  */
 function App() {
+    // Load the Google Maps API before rendering anything.
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     });
 
+    // Component state.
     const [map, setMap] = useState(null);
     const [visibleIncidents, setVisibleIncidents] = useState([]);
     const [selectedIncident, setSelectedIncident] = useState(null);
     const [isIncidentListVisible, setIsIncidentListVisible] = useState(false);
 
     /**
-     * When the map has loaded, set the bounds to fit all incidents.
+     * When the map has loaded:
+     *
+     * 1. Store the map.
+     * 2. Extend the bounds to fit all of the incidents.
+     * 3. Create a marker for each incident.
+     * 4. Create a marker clusterer.
      */
     const handleMapLoad = useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds();
+        const GoogleMaps = window.google.maps;
+
+        // Store the map.
+        setMap(map);
+
+        // Extend the bounds.
+
+        const bounds = new GoogleMaps.LatLngBounds();
 
         incidents.forEach((incident) => {
             bounds.extend({
@@ -52,7 +63,33 @@ function App() {
         });
 
         map.fitBounds(bounds);
-        setMap(map);
+
+        // Create the markers.
+
+        incidents.map((incident) => {
+            const marker = new GoogleMaps.Marker({
+                map: map,
+                position: new GoogleMaps.LatLng(
+                    parseFloat(incident.lat),
+                    parseFloat(incident.long)
+                ),
+                icon: getIcon(incident),
+            });
+
+            GoogleMaps.event.addListener(marker, "click", () =>
+                handleMarkerClick(incident)
+            );
+
+            incident.marker = marker;
+        });
+
+        // Create the marker clusterer.
+
+        new MarkerClusterer({
+            map,
+            markers: incidents.map((incident) => incident.marker),
+            algorithmOptions: { maxZoom: 10 },
+        });
     }, []);
 
     /**
@@ -63,18 +100,10 @@ function App() {
     }, []);
 
     /**
-     * When an incident's info window is closed, deselect the incident.
-     */
-    const handleInfoWindowCloseClick = () => {
-        setSelectedIncident(null);
-    };
-
-    /**
      * After the map is changed, update the list of visible incidents.
      */
     const updateList = () => {
         if (!map) return;
-
         const bounds = map.getBounds();
 
         setVisibleIncidents(
@@ -85,18 +114,6 @@ function App() {
                 })
             )
         );
-    };
-
-    /**
-     * When a marker has loaded, associate it with the incident that
-     * it relates to, so that we can anchor the <InfoWindow> to the
-     * marker when displaying it.
-     *
-     * @param {google.maps.Marker} marker The loaded marker.
-     * @param {Object} incident The incident that the marker relates to.
-     */
-    const saveIncidentMarker = (marker, incident) => {
-        incident.marker = marker;
     };
 
     /**
@@ -112,6 +129,13 @@ function App() {
 
         // Now display the new <InfoWindow>.
         setSelectedIncident(incident);
+    };
+
+    /**
+     * When an incident's info window is closed, deselect the incident.
+     */
+    const handleInfoWindowCloseClick = () => {
+        setSelectedIncident(null);
     };
 
     /**
@@ -201,20 +225,6 @@ function App() {
                 onIdle={updateList}
             >
                 <>
-                    {incidents.map((incident) => (
-                        <Marker
-                            icon={getIcon(incident)}
-                            key={incident.id}
-                            position={{
-                                lat: parseFloat(incident.lat),
-                                lng: parseFloat(incident.long),
-                            }}
-                            onLoad={(marker) =>
-                                saveIncidentMarker(marker, incident)
-                            }
-                            onClick={() => handleMarkerClick(incident)}
-                        ></Marker>
-                    ))}
                     {selectedIncident && (
                         <InfoWindow
                             anchor={selectedIncident.marker}
