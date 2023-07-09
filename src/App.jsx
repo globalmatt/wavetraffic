@@ -190,7 +190,8 @@ function App() {
                             setIsIncidentListVisible(!isIncidentListVisible)
                         }
                     >
-                        {isIncidentListVisible ? "Hide" : "Show"} Incidents
+                        {isIncidentListVisible ? "Hide" : "View"} Incident
+                        {visibleIncidents.length === 1 ? "" : "s"}
                     </button>
                 </div>
                 <div

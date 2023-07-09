@@ -122,10 +122,6 @@ body {
     }
 }
 
-.incidentListHeader button {
-    border-radius: 0;
-}
-
 /* --- Map container --- */
 
 /* On mobile, position the map absolutely and give it a 100% width. */
