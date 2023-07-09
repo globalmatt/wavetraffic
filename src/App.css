@@ -47,6 +47,8 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
+    /* Prevent pinch-to-zoom on iOS Safari */
+    touch-action: pan-x pan-y;
 }
 
 /* On desktop, always show the list in a column on the left. */
@@ -87,6 +89,8 @@ body {
     padding: 0;
     font-size: 0.8em;
     border-top: 1px solid #888;
+    /* Prevent pinch-to-zoom on iOS Safari */
+    touch-action: pan-x pan-y;
 }
 
 /* On desktop, absolutely position the list below the heading and make it scrollable. */
