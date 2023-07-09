@@ -38,6 +38,7 @@ function App() {
     const [isIncidentListVisible, setIsIncidentListVisible] = useState(false);
     const incidentListItemRefs = useRef([]);
     const incidentListRef = useRef();
+    const incidentListULRef = useRef();
 
     /**
      * When the map has loaded:
@@ -132,13 +133,26 @@ function App() {
             selectedIncident &&
             incidentListItemRefs.current[parseInt(selectedIncident.id)]
         ) {
-            setTimeout(() => {
+            const ulOverflowY = window
+                .getComputedStyle(incidentListULRef.current)
+                .getPropertyValue("overflow-y");
+
+            // Scroll the innner <ul> if it's scrollable (i.e. on
+            // desktop). Otherwise, scroll the outer `.incidentList`
+            // <div> (i.e. on mobile).
+            if (ulOverflowY === "scroll") {
+                incidentListULRef.current.scrollTo({
+                    top: incidentListItemRefs.current[
+                        parseInt(selectedIncident.id)
+                    ].offsetTop,
+                });
+            } else {
                 incidentListRef.current.scrollTo({
                     top: incidentListItemRefs.current[
                         parseInt(selectedIncident.id)
                     ].offsetTop,
                 });
-            }, 1000);
+            }
         }
     }, [selectedIncident, visibleIncidents, isIncidentListVisible]);
 
@@ -225,12 +239,13 @@ function App() {
                     className={`incidentList ${
                         isIncidentListVisible ? "visible" : ""
                     }`}
+                    ref={incidentListRef}
                 >
                     <h2>
                         {visibleIncidents.length} incident
                         {visibleIncidents.length === 1 ? "" : "s"} shown.
                     </h2>
-                    <ul ref={incidentListRef}>
+                    <ul ref={incidentListULRef}>
                         {visibleIncidents.map((incident) => (
                             <li
                                 key={incident.id}
