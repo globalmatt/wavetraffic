@@ -1,7 +1,6 @@
 // Vendors.
 import { useState, useCallback, useRef, useEffect } from "react";
-import { flushSync } from "react-dom";
-import { GoogleMap, useJsApiLoader, InfoWindowF } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 // App styles.
@@ -39,20 +38,32 @@ function App() {
     const incidentListItemRefs = useRef([]);
     const incidentListRef = useRef();
     const incidentListULRef = useRef();
+    const infoWindow = useRef(false);
 
     /**
      * When the map has loaded:
      *
      * 1. Store the map.
-     * 2. Extend the bounds to fit all of the incidents.
-     * 3. Create a marker for each incident.
-     * 4. Create a marker clusterer.
+     * 2. Create the info window object.
+     * 3. Extend the bounds to fit all of the incidents.
+     * 4. Create a marker for each incident.
+     * 5. Create a marker clusterer.
      */
-    const handleMapLoad = useCallback(function callback(map) {
+    const handleMapLoad = (map) => {
         const GoogleMaps = window.google.maps;
 
         // Store the map.
         setMap(map);
+
+        // Create the info window and add a close event listener to it.
+
+        infoWindow.current = new GoogleMaps.InfoWindow();
+
+        GoogleMaps.event.addListener(
+            infoWindow.current,
+            "closeclick",
+            handleInfoWindowCloseClick
+        );
 
         // Extend the bounds. (Wait 500ms to give iOS Safari enough time
         // to initialise the map on page reload, otherwise it displays
@@ -97,7 +108,7 @@ function App() {
             markers: incidents.map((incident) => incident.marker),
             algorithmOptions: { maxZoom: 10 },
         });
-    }, []);
+    };
 
     /**
      * When the map has unmounted, remove its reference.
@@ -107,7 +118,8 @@ function App() {
     }, []);
 
     /**
-     * After the map is changed, update the list of visible incidents.
+     * After the map is panned or zoomed, update the list of visible
+     * incidents.
      */
     const updateList = () => {
         if (!map) return;
@@ -125,8 +137,28 @@ function App() {
     };
 
     /**
+     * Check if a given element is scrolled into view.
+     *
+     * @see https://stackoverflow.com/a/76546933/10310114
+     * @param {Element} - The element to check.
+     * @returns {Promise<boolean>} - Whether the element is in view.
+     */
+    async function isElementInScrollView(element) {
+        return new Promise((resolve) => {
+            const observer = new IntersectionObserver(
+                (entries, observerItself) => {
+                    observerItself.disconnect();
+                    resolve(entries[0].intersectionRatio === 1);
+                }
+            );
+            observer.observe(element);
+        });
+    }
+
+    /**
      * Whenever the selected incident or incident list changes,
-     * scroll to the selected incident in the list.
+     * scroll to the selected incident in the list (unless it's
+     * already in view).
      */
     useEffect(() => {
         if (
@@ -137,24 +169,57 @@ function App() {
                 .getComputedStyle(incidentListULRef.current)
                 .getPropertyValue("overflow-y");
 
-            // Scroll the innner <ul> if it's scrollable (i.e. on
-            // desktop). Otherwise, scroll the outer `.incidentList`
-            // <div> (i.e. on mobile).
-            if (ulOverflowY === "scroll") {
-                incidentListULRef.current.scrollTo({
-                    top: incidentListItemRefs.current[
-                        parseInt(selectedIncident.id)
-                    ].offsetTop,
-                });
-            } else {
-                incidentListRef.current.scrollTo({
-                    top: incidentListItemRefs.current[
-                        parseInt(selectedIncident.id)
-                    ].offsetTop,
-                });
-            }
+            (async () => {
+                const isInView = await isElementInScrollView(
+                    incidentListItemRefs.current[parseInt(selectedIncident.id)]
+                );
+
+                if (!isInView) {
+                    // Scroll the innner <ul> if it's scrollable (i.e. on
+                    // desktop). Otherwise, scroll the outer `.incidentList`
+                    // <div> (i.e. on mobile).
+                    if (ulOverflowY === "scroll") {
+                        incidentListULRef.current.scrollTo({
+                            top: incidentListItemRefs.current[
+                                parseInt(selectedIncident.id)
+                            ].offsetTop,
+                        });
+                    } else {
+                        incidentListRef.current.scrollTo({
+                            top: incidentListItemRefs.current[
+                                parseInt(selectedIncident.id)
+                            ].offsetTop,
+                        });
+                    }
+                }
+            })();
         }
     }, [selectedIncident, visibleIncidents, isIncidentListVisible]);
+
+    /**
+     * Escape text for use inside a DOM element.
+     *
+     * @see https://stackoverflow.com/a/30970751/10310114
+     * @param {string} text The text to escape.
+     * @returns {string} The escaped text.
+     */
+    function escape(s) {
+        return s.replace(/[^0-9A-Za-z ]/g, (c) => "&#" + c.charCodeAt(0) + ";");
+    }
+
+    /**
+     * Set the content inside the info window based on the supplied incidient.
+     * @param {*} incident The incident to use.
+     */
+    const setInfoWindowContent = (incident) => {
+        infoWindow.current.setContent(
+            `<div class="infoWindow"><h2>${escape(
+                formatAlertType(incident.alert_type)
+            )}</h2><h3>${escape(incident.title)}</h3><p>${escape(
+                incident.description
+            )}</p></div>`
+        );
+    };
 
     /**
      * When a marker is clicked, display an info window with the
@@ -163,19 +228,44 @@ function App() {
      * @param {Object} incident The incident that the marker relates to.
      */
     const handleMarkerClick = (incident) => {
-        // Force a re-render for this first state update
-        // to ensure any existing <InfoWindow> is unmounted.
-        flushSync(() => setSelectedIncident(null));
-        // Now display the new <InfoWindow>.
+        setInfoWindowContent(incident);
+
+        infoWindow.current.open({
+            anchor: incident.marker,
+            map,
+        });
+
         setSelectedIncident(incident);
+    };
+
+    /**
+     * When an incident in the incident list is clicked,
+     * select it, move the map to its marker, and display its
+     * info window.
+     *
+     * @param {Object} incident The incident that was clicked.
+     */
+    const handleIncidentListItemClick = (incident) => {
+        setSelectedIncident(incident);
+        setIsIncidentListVisible(false);
+
+        map.panTo(incident.marker.position);
+        if (map.getZoom() < 14) map.setZoom(14);
+
+        setInfoWindowContent(incident);
+
+        infoWindow.current.open({
+            anchor: incident.marker,
+            map,
+        });
     };
 
     /**
      * When an incident's info window is closed, deselect the incident.
      */
-    const handleInfoWindowCloseClick = () => {
+    function handleInfoWindowCloseClick() {
         setSelectedIncident(null);
-    };
+    }
 
     /**
      * Format an alert type for better UX:
@@ -260,6 +350,9 @@ function App() {
                                         ? "selected"
                                         : ""
                                 }
+                                onClick={() =>
+                                    handleIncidentListItemClick(incident)
+                                }
                             >
                                 <img
                                     src={getIcon(incident)}
@@ -282,26 +375,7 @@ function App() {
                 onLoad={handleMapLoad}
                 onUnmount={handleMapUnmount}
                 onIdle={updateList}
-            >
-                <>
-                    {selectedIncident && (
-                        <InfoWindowF
-                            anchor={selectedIncident.marker}
-                            onCloseClick={handleInfoWindowCloseClick}
-                        >
-                            <>
-                                <h2>
-                                    {formatAlertType(
-                                        selectedIncident.alert_type
-                                    )}
-                                </h2>
-                                <h3>{selectedIncident.title}</h3>
-                                <p>{selectedIncident.description}</p>
-                            </>
-                        </InfoWindowF>
-                    )}
-                </>
-            </GoogleMap>
+            ></GoogleMap>
         </div>
     ) : (
         <></>

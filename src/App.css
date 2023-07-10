@@ -181,6 +181,10 @@ body {
 
 /* ---Map styles --- */
 
+.infoWindow {
+    margin-right: 12px;
+}
+
 /* Remove the blue border around InfoWindow close buttons. */
 button.gm-ui-hover-effect:focus {
     outline: none;
