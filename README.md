@@ -5,9 +5,19 @@
 Features:
 
 -   A pannable and zoomable map using Google Maps.
+
 -   Custom incident icons.
+
 -   Clustered markers.
+
+-   Cicking an incident marker opens an info window with more details.
+
 -   The incidents currently shown on the map are also shown in a list.
+    The currently-selected marker is highlighted in the list.
+
+-   Clicking an incident in the list pans the map to the incident and
+    opens its info window.
+
 -   The app is mobile-responsive.
 
 ## 1. Building
@@ -44,7 +54,7 @@ A live demo of the app is available at [https://www.elated.com/wavetraffic/](htt
 
 Some suggested enhancements for the app if more time becomes available:
 
--   Link the incident list items to the markers, so opening a marker's info window also highlights the corresponding list item, and vice versa.
+-   Add filtering by incident type.
 
 -   Add light/dark-mode support to the incident list and list header.
 
