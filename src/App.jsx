@@ -208,7 +208,7 @@ function App() {
     }
 
     /**
-     * Set the content inside the info window based on the supplied incidient.
+     * Set the content inside the info window based on the supplied incident.
      * @param {*} incident The incident to use.
      */
     const setInfoWindowContent = (incident) => {
