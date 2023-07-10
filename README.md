@@ -32,7 +32,9 @@ Features:
 
 ### Instructions
 
-1. Clone the repository.
+1. Clone the repository:
+
+    `git clone https://github.com/globalmatt/wavetraffic.git`
 
 2. Run `npm install` in the repository root folder to install the dependencies.
 
