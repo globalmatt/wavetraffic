@@ -189,3 +189,10 @@ body {
 button.gm-ui-hover-effect:focus {
     outline: none;
 }
+
+/* Prevent pinch-zoom inside info windows on mobile browsers. */
+.gm-style-iw,
+.gm-style-iw-c .gm-style-iw-d,
+div[role="dialog"] {
+    touch-action: pan-x pan-y !important;
+}
